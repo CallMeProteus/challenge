@@ -1,7 +1,8 @@
 from rest_framework import serializers
 from django.conf import settings
 from django.contrib.auth import get_user_model
-
+from web3 import Web3
+from django.conf import settings
 
 class RegistrationSerializer(serializers.ModelSerializer):
 
@@ -9,7 +10,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
 
     class Meta:
         model = get_user_model()
-        fields = ("first_name", "last_name", "email", "password", "password2")
+        fields = ("first_name", "last_name", "email", "password", "password2","ethereumAddress")
         extra_kwargs = {
             "password": {"write_only": True},
             "password2": {"write_only": True}
@@ -20,6 +21,7 @@ class RegistrationSerializer(serializers.ModelSerializer):
             email=self.validated_data["email"],
             first_name=self.validated_data["first_name"],
             last_name=self.validated_data["last_name"],
+            ethereumAddress=self.validated_data["ethereumAddress"]
         )
 
         password = self.validated_data["password"]
@@ -42,6 +44,16 @@ class LoginSerializer(serializers.Serializer):
 
 
 class UserSerializer(serializers.ModelSerializer):
+    balance = serializers.SerializerMethodField()
     class Meta:
         model = get_user_model()
-        fields = ("id", "email", "is_staff", "first_name", "last_name")
+        fields = ("id", "email", "is_staff", "first_name", "last_name", "ethereumAddress", "balance")
+    def get_balance(self, obj):
+        w3 = Web3(Web3.HTTPProvider(settings.INFURA_URL))
+        try:
+            balance_wei = w3.eth.get_balance(obj.ethereumAddress)
+            balance_eth = w3.from_wei(balance_wei, 'ether')
+            return float(balance_eth)
+        except Exception as e:
+            print(f"Error fetching balance: {e}")
+            return None

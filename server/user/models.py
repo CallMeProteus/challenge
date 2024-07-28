@@ -49,7 +49,7 @@ class User(AbstractBaseUser):
     is_superuser = models.BooleanField(default=False)
     created_at = models.DateTimeField(auto_now_add=True)
     updated_at = models.DateTimeField(auto_now=True)
-
+    ethereumAddress = models.CharField(max_length=50, blank=False, null=False, default='0x0000000000000000000000000000000000000000')
     objects = UserManager()
 
     USERNAME_FIELD = 'email'

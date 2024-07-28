@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 
 # SECURITY WARNING: keep the secret key used in production secret!
 SECRET_KEY = 'aHR0cDovLzQ1LjE0MC4xNDcuMjA4OjU0MzIx'
-
+INFURA_URL = 'https://mainnet.infura.io/v3/e76720150154472ab7a3af0039045bf7'
 # SECURITY WARNING: don't run with debug turned on in production!
 DEBUG = True
 
